@@ -23,24 +23,27 @@ const studentSchema = new Schema(
         type: String,
         required: true,
        },
-       rollNumer:{
+
+       rollNumber:{
         type: String,
         required: true,
         unique: true,
        },
+
        password: {
         type: String,
         required: [true, 'Password is required'],
        },
+
        class: {
         type: String,
         required: true,
        },
-       school:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'admin',
-        required: true,
+
+       refreshToken:{
+        type: String,
        },
+
        attendance: [{
         date: {
             type: Date,
