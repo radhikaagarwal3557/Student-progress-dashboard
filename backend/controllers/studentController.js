@@ -1,5 +1,10 @@
-import {student} from "../models/studentSchema.js";
+import dotenv from "dotenv";
+dotenv.config();
 import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import ApiResponse from "../utils/ApiResponse.js";
+import ApiError from "../utils.ApiError.js";
+import Student from "../models/studentSchema.js";
 
 const generateAccessAndRefreshTokens = async(studentId) => {
     try{
@@ -212,4 +217,14 @@ const getStudentDetail = asyncHandler(async (req, res) => {
 
     
 })
+
+export{
+    registerStudent,
+    studentLogin,
+    logoutStudent,
+    refreshAccessToken,
+    changeCurrentPassword,
+    updateStudent,
+    getStudentDetail
+}
 
