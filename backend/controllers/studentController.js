@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import ApiResponse from "../utils/ApiResponse.js";
@@ -9,8 +10,8 @@ import Student from "../models/studentSchema.js";
 const generateAccessAndRefreshTokens = async(studentId) => {
     try{
         const student = await Student.findById(studentId)
-        const accessToken = student.generateAccessToken
-        const refreshToken = student.generateRefreshToken
+        const accessToken = await student.generateAccessToken();
+        const refreshToken = await student.generateRefreshToken();
 
         student.refreshToken = refreshToken
         await student.save({validateForSave: false})
@@ -96,7 +97,7 @@ const studentLogin = asyncHandler(async (req, res) => {
 })
 
 const logoutStudent = asyncHandler(async (req, res) => {
-    await Student.findbyIdAndUpdate(
+    await Student.findByIdAndUpdate(
         req.student._id,
         {
             $unset: { refreshToken: 1 }
@@ -153,7 +154,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         .json(
             new ApiResponse(
                 200, 
-                {accessToken, refreshToken:newRefreshToken},
+                {accessToken, refreshToken},
                 "Access token refreshed"
             )
         )    
@@ -163,10 +164,10 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 })
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-    const {oldPasswod, newPassword} = req.body;
+    const { oldPassword, newPassword } = req.body;
 
     const student = await Student.findById(req.student._id);
-    const isPasswordCorrect = await student.isPasswordCorrect(oldPasswod);
+    const isPasswordCorrect = await student.isPasswordCorrect(oldPassword);
 
     if(!isPasswordCorrect){
         throw new ApiError(400, "Invalid old password");
@@ -209,12 +210,25 @@ const updateStudent = asyncHandler(async (req, res) => {
 
     return res
     .status(200)
-    .json(new ApiResponse(200, updatedstudent, "Student updated successfully"));
+    .json(new ApiResponse(200, updatedStudent, "Student updated successfully"));
 })
 
 const getStudentDetail = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    
+    const studentDoc = await Student.findById(id)
+        .select("sname username email rollNumber");
 
+    if (!studentDoc) {
+        throw new ApiError(404, "No student found");
+    }
+
+    // Convert Mongoose document to plain object (optional)
+    const student = studentDoc.toObject();
+
+    return res.status(200).json(
+        new ApiResponse(200, student, "Student details fetched successfully")
+    );
     
 })
 
