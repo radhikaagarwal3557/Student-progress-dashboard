@@ -1,4 +1,5 @@
 import { Router } from 'express';
+
 import {
     registerStudent,
     studentLogin,
@@ -22,3 +23,5 @@ router.route('/change-password').post(verifyJWT, changeCurrentPassword);
 router.route('/update').put(verifyJWT, updateStudent);
 router.route('/detail/:id').get(verifyJWT, getStudentDetail);
 router.route('/delete').delete(verifyJWT, deleteStudent);
+
+export default router;
