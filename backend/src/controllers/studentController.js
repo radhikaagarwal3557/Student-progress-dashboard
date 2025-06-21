@@ -1,11 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
-import ApiResponse from "../utils/ApiResponse.js";
-import ApiError from "../utils.ApiError.js";
-import Student from "../models/studentSchema.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import { Student } from "../models/student.model.js";
+import mongoose from "mongoose";
 
 const generateAccessAndRefreshTokens = async(studentId) => {
     try{
