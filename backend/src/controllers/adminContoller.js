@@ -138,7 +138,7 @@ const changeAdminPassword = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 })
 
-const refreshAccessToken = asyncHandler(async (req, res) => {
+const refreshAdminAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies.refreshToken ||  req.body.refreshToken;
     
         if(!incomingRefreshToken){
@@ -189,5 +189,5 @@ export {
     adminLogin,
     adminLogout,
     changeAdminPassword,
-    refreshAccessToken
+    refreshAdminAccessToken
 };

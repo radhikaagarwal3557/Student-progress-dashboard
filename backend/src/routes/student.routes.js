@@ -1,13 +1,5 @@
 import { Router } from 'express';
 
-import{
-    adminRegister,
-    adminLogin,
-    logoutAdmin,
-    refreshAdminAccessToken,
-    changeAdminCurrentPassword,
-} from '../controllers/adminController.js';
-
 import {
     registerStudent,
     studentLogin,
@@ -19,16 +11,9 @@ import {
     deleteStudent
 } from '../controllers/studentController.js';
 
-import {verifyJWT} from '../middlewares/auth.middleware.js';
+import {verifyJWT} from '../middlewares/student.middleware.js';
 
 const router = Router();
-
-// admin
-router.post('/admin/register', adminRegister);
-router.route('/admin/login').post(adminLogin);
-router.route('/admin/logout').post(verifyJWT, logoutAdmin);
-router.route('/admin/refresh-token').post(refreshAdminAccessToken);
-router.route('/admin/change-password').post(verifyJWT, changeAdminCurrentPassword);
 
 // student
 router.post('/register', registerStudent);
