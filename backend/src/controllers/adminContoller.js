@@ -120,3 +120,20 @@ const adminLogout = asyncHandler(async (req, res) => {
     .cookie("refreshToken", "", options)
     .json(new ApiResponse(200, {}, "Admin logged out successfully"));
 })
+
+const changeAdminPassword = asyncHandler(async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+
+    const admin = await Admin.findById(req.admin?._id);
+
+   if(!isPasswordCorrect){
+        throw new ApiError(400, "Invalid Old password");
+    }
+
+    admin.password = newPassword;
+    await admin.save({ validateBeforeSave: true });
+
+    return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Password changed successfully"));
+})
