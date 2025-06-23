@@ -1,0 +1,122 @@
+import { asyncHandler } from "../utils/asyncHandler";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { ApiError } from "../utils/ApiError.js";
+import bcrypt from "bcryptjs";
+import { Admin } from "../models/admin.model.js";
+import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
+
+const generateAccessAndRefreshTokens = async (adminId) => {
+    try{
+        const admin = await Admin.findById(adminId);
+        const accessToken = admin.generateAccessToken();
+        const refreshToken = admin.generateRefreshToken();
+
+        admin.refreshToken = refreshToken;
+        await admin.save({ validateModifiedOnly: true });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        throw new ApiError(500, "Something went wrong while generating refresh and access tokens");
+    }
+}
+
+const adminRegister = asyncHandler(async (req, res) => {
+    const { username, password, email } = req.body;
+
+    if ([username, password, email].some((field) => field?.trim() === "")) {
+        throw new ApiError(400, "All fields are required");
+    }
+
+    const existedAdmin = await Admin.findOne({ $or: [{ username }, { email }] });
+
+    if (existedAdmin) {
+        throw new ApiError(409, "Admin with this username or email already exists");
+    }
+
+    const admin = new Admin({ username, email, password });
+    // Generate JWT tokens
+    const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(result._id);
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    // Final response
+    return res
+    .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(201, { admin: savedAdmin, accessToken, refreshToken }, "Admin registered successfully")
+    );
+})
+
+const adminLogin = asyncHandler(async (req, res) => {
+    const { username, password, email} = req.body;
+
+    if ((!username && !email) || !password) {
+        throw new ApiError(400, "Username and password are required");
+    }
+
+    const admin = await Admin.findOne({
+        $or: [{username}, {email}]
+    })
+
+    if (!admin) {
+        throw new ApiError(404, "Admin not found");
+    }
+
+    const isPasswordValid = await admin.isPasswordCorrect(password);
+
+    if (!isPasswordValid) {
+        throw new ApiError(401, "Invalid admin credentials");
+    }
+
+    const {accessToken, refreshToken} = await generateAccessAndRefreshTokens(admin._id);
+
+    const loggedInadmin = await Admin.findById(admin._id).select("-password -refreshToken");
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(
+            200, 
+            { 
+                admin: loggedInadmin, accessToken, refreshToken
+            }, "Admin logged in successfully"
+        )
+    );
+})
+
+const adminLogout = asyncHandler(async (req, res) => {
+    await Admin.findByIdAndUpdate(
+        req.admin._id, 
+        {
+            $unset: {
+                refreshToken: 1 
+            }
+        },
+        {
+            new: true
+        }
+    )
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .cookie("accessToken", "", options)
+    .cookie("refreshToken", "", options)
+    .json(new ApiResponse(200, {}, "Admin logged out successfully"));
+})
