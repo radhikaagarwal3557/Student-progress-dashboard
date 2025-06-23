@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { Student } from "../models/student.model.js";
+import { Admin } from "../models/admin.model.js";
 
 export const verifyJWT = asyncHandler(async(req, _, next) => {
     try{
@@ -12,16 +12,16 @@ export const verifyJWT = asyncHandler(async(req, _, next) => {
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        const student = await Student.findById(decodedToken?.id).select("-password -refreshToken");
+        const admin= await Admin.findById(decodedToken?.id).select("-password -refreshToken");
 
-        if(!student){
+        if(!admin){
             throw new ApiError(401, "unauthorized request");
         }
 
-        req.student = student;
+        req.admin = admin;
         next();
     }
     catch(err){
-        throw new ApiError(401, error?.message || "Invalid acess token");
+        throw new ApiError(401, err?.message || "Invalid acess token");
     }
 })
