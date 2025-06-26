@@ -18,6 +18,8 @@ app.use(cookieParser())
 import studentRoutes from './routes/student.routes.js';
 
 
-app.use('/api/v1/students', studentRoutes);
+app.use('/api/students', studentRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/attendace', attendanceRoutes);
 
 export{app};

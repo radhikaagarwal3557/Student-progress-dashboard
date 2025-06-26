@@ -105,7 +105,7 @@ export const updateAttendance = asyncHandler(async (req, res) => {
 
         // save record
         const populatedAttendance = await attendanceRecord.save();
-        
+
         res.status(200).json(new ApiResponse('Attendance updated successfully', updatedAttendance));
     } catch (error) {
         res.status(500).json(new ApiResponse('Error updating attendance', null, error.message));
@@ -126,3 +126,11 @@ export const deleteAttendance = asyncHandler(async (req, res) => {
         
     }
 })
+
+module.exports = {
+    createAttendance,
+    getAllAttendance,
+    singleAttendance,
+    updateAttendance,
+    deleteAttendance
+};
