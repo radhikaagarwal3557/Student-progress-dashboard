@@ -25,11 +25,6 @@ const attendanceSchema = new Schema({
         enum: ['Present', 'Absent'],
         required: true
     },
-    subName: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'subject',
-        required: true
-    }
 }, {
     timestamps: true
 })
