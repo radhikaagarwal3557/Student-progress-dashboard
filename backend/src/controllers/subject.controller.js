@@ -36,6 +36,16 @@ export const updateSubject = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
         const { subName, code, teacher, semester } = req.body;
+        const subject = await Subject.findById(id);
+        if (!subject) {
+            throw new ApiError(404, "Subject not found");
+        }
+        // only allow updating name, code
+        subject.subName = subName || subject.subName;
+        subject.code = code || subject.code;
+
+        const updatedSubject = await subject.save();
+        res.status(200).json(new ApiResponse("Subject updated successfully", updatedSubject));
     } catch (error) {
         
     }
