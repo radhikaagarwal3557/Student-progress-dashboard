@@ -64,3 +64,10 @@ export const deleteSubject = asyncHandler(async (req, res) => {
         throw new ApiError(500, error.message);
     }
 })
+
+module.exports = {
+    createSubject,
+    allSubjects,
+    updateSubject,
+    deleteSubject
+};
