@@ -50,3 +50,17 @@ export const updateSubject = asyncHandler(async (req, res) => {
         
     }
 })
+
+export const deleteSubject = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const subject = await Subject.findById(id);
+        if (!subject) {
+            throw new ApiError(404, "Subject not found");
+        }
+        await subject.deleteOne();
+        res.status(200).json(new ApiResponse("Subject deleted successfully"));
+    } catch (error) {
+        throw new ApiError(500, error.message);
+    }
+})
