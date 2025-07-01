@@ -16,10 +16,14 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import studentRoutes from './routes/student.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+import attendanceRoutes from './routes/attendance.routes.js';
+import subjectRoutes from './routes/subject.routes.js';
 
 
 app.use('/api/students', studentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/attendace', attendanceRoutes);
+app.use('/api/subjects', subjectRoutes);
 
 export{app};

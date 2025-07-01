@@ -7,8 +7,6 @@ import {
     updateAttendance,
     deleteAttendance
 } from '../controllers/attendanceController.js';
-    
-import { verifyJWT } from '../middlewares/student.middleware.js';
 
 const router = Router();
 
