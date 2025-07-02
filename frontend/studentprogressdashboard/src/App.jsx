@@ -1,8 +1,17 @@
-import React from 'react';
-import LoginFinal from './LoginFinal';
+import { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/LoginPages'; 
+import StudentList from './pages/StudentList';
 
 function App() {
-  return <LoginFinal />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/students" element={<StudentList />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;
