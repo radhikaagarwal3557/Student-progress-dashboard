@@ -61,7 +61,6 @@ export const AbsentList = ({ data }) => {
   );
 };
 
-// ✅ PropTypes for validation
 AbsentList.propTypes = {
   data: PropTypes.arrayOf(
     PropTypes.shape({
@@ -75,3 +74,5 @@ AbsentList.propTypes = {
     })
   ).isRequired,
 };
+
+export default AttendanceList;
