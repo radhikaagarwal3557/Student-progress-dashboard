@@ -4,6 +4,8 @@ import Login from './pages/auth/LoginPages';
 import StudentList from './pages/student/StudentList';
 import Attendancelist from './pages/attendance/AttendanceList';
 import StudentDashboard from './pages/student/StudentDashboard';
+import StudentAssignment from './pages/student/StudentAssignment';
+import StudentResult from './pages/student/StudentResult';
 
 function App() {
   return (
@@ -13,7 +15,8 @@ function App() {
         <Route path="/student" element={<StudentList />} />
         <Route path="/attendance" element={<AttendanceList />} />
         <Route path="/dashboard" element={<StudentDashboard />} />
-        {/* Add more routes as needed */}
+        <Route path="/assignment" element={<StudentAssignment />} />
+        <Route path="/result" element={<StudentResult />} />
       </Routes>
     </BrowserRouter>
   );
