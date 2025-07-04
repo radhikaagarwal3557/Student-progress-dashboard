@@ -6,6 +6,9 @@ import Attendancelist from './pages/attendance/AttendanceList';
 import StudentDashboard from './pages/student/StudentDashboard';
 import StudentAssignment from './pages/student/StudentAssignment';
 import StudentResult from './pages/student/StudentResult';
+import StudentProfile from './pages/student/StudentProfile';
+import StudentMainPage from './pages/student/StudentMainPage';
+import StudentSubject from './pages/student/StudentSubject';
 
 function App() {
   return (
@@ -17,6 +20,8 @@ function App() {
         <Route path="/dashboard" element={<StudentDashboard />} />
         <Route path="/assignment" element={<StudentAssignment />} />
         <Route path="/result" element={<StudentResult />} />
+        <Route path="/profile" element={<StudentProfile />} />
+        <Route path="/student/main" element={<StudentMainPage />} />
       </Routes>
     </BrowserRouter>
   );
