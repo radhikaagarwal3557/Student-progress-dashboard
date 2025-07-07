@@ -4,7 +4,7 @@ import {
     allSubjects,
     updateSubject,
     deleteSubject,
-} from "../controllers/subject.controller.js";
+} from "../controllers/subjectController.js";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
-import { ApiError } from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
-import { Subject } from "../models/subject.model";
-import { ApiResponse } from "../utils/ApiResponse";
+import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { Subject } from "../models/subject.model.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 
 export const createSubject = asyncHandler(async (req, res) => {

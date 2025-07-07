@@ -30,3 +30,4 @@ const attendanceSchema = new Schema({
 })
 
 const Attendance = mongoose.model('attendance', attendanceSchema);
+export {Attendance};

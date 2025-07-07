@@ -1,95 +1,184 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import Header from "../../components/Header";
-import StatBox from "../../components/StatBox";
-import BarChart from "../../components/BarChart";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import SchoolIcon from "@mui/icons-material/School";
-import PeopleIcon from "@mui/icons-material/People";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import {
+    CssBaseline,
+    Box,
+    Toolbar,
+    List,
+    Typography,
+    Divider,
+    IconButton,
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
-const Dashboard = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const navigate = useNavigate();
+import { AppBar, Drawer } from '../../components/styles';
+import AccountMenu from '../../components/AccountMenu';
+import SideBar from './SideBar';
 
-  return (
-    <Box m="20px">
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="ADMIN DASHBOARD" subtitle="Monitor & Manage Student LMS" />
-        <Button
-          sx={{
-            backgroundColor: colors.greenAccent[600],
-            color: "#fff",
-            fontWeight: 600,
-            px: 3,
-            py: 1,
-            borderRadius: 2,
-          }}
-          onClick={() => navigate("/admin/reports")}
-        >
-          View Reports
-        </Button>
-      </Box>
+// Common Pages
+import AdminProfile from './AdminProfile';
+import AdminHomePage from './AdminHomePage';
+import Logout from '../Logout';
 
-      {/* STATS OVERVIEW */}
-      <Box
-        display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
-        gap="20px"
-      >
-        <Box gridColumn="span 3" bgcolor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
-          <StatBox title="120" subtitle="Total Students" progress="0.85" increase="+10%" icon={<PeopleIcon sx={{ color: colors.greenAccent[600], fontSize: 26 }} />} />
-        </Box>
+// Student Section
+import AddStudent from './studentRelated/AddStudent';
+import ShowStudents from './studentRelated/ShowStudents';
+import ViewStudent from './studentRelated/ViewStudent';
+import StudentAttendance from './studentRelated/StudentAttendance';
+import StudentExamMarks from './studentRelated/StudentExamMarks';
+import SeeComplains from './studentRelated/SeeComplains';
 
-        <Box gridColumn="span 3" bgcolor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
-          <StatBox title="12" subtitle="Teachers Assigned" progress="0.65" increase="+3%" icon={<SchoolIcon sx={{ color: colors.greenAccent[600], fontSize: 26 }} />} />
-        </Box>
+// Notice Section
+import AddNotice from './noticeRelated/AddNotice';
+import ShowNotices from './noticeRelated/ShowNotices';
 
-        <Box gridColumn="span 3" bgcolor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
-          <StatBox title="25" subtitle="Subjects" progress="0.75" increase="+5%" icon={<AssignmentIcon sx={{ color: colors.greenAccent[600], fontSize: 26 }} />} />
-        </Box>
+// Subject Section
+import ShowSubjects from './subjectRelated/ShowSubjects';
+import SubjectForm from './subjectRelated/SubjectForm';
+import ViewSubject from './subjectRelated/ViewSubject';
 
-        <Box gridColumn="span 3" bgcolor={colors.primary[400]} display="flex" alignItems="center" justifyContent="center">
-          <StatBox title="85%" subtitle="Avg Attendance" progress="0.85" increase="+2%" icon={<CalendarTodayIcon sx={{ color: colors.greenAccent[600], fontSize: 26 }} />} />
-        </Box>
+// Teacher Section
+import AddTeacher from './teacherRelated/AddTeacher';
+import ChooseClass from './teacherRelated/ChooseClass';
+import ChooseSubject from './teacherRelated/ChooseSubject';
+import ShowTeachers from './teacherRelated/ShowTeachers';
+import TeacherDetails from './teacherRelated/TeacherDetails';
 
-        {/* ASSIGNMENT PERFORMANCE */}
-        <Box gridColumn="span 8" gridRow="span 2" bgcolor={colors.primary[400]}>
-          <Box mt="25px" px="30px" display="flex" justifyContent="space-between" alignItems="center">
-            <Box>
-              <Typography variant="h5" fontWeight={600} color={colors.grey[100]}>
-                Assignment Performance
-              </Typography>
-              <Typography variant="h3" fontWeight="bold" color={colors.greenAccent[500]}>
-                Weekly Overview
-              </Typography>
+// Class Section
+import AddClass from './classRelated/AddClass';
+import ClassDetails from './classRelated/ClassDetails';
+import ShowClasses from './classRelated/ShowClasses';
+
+const AdminDashboard = () => {
+    const [open, setOpen] = useState(false);
+    const toggleDrawer = () => setOpen(!open);
+
+    return (
+        <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
+
+            {/* Top AppBar */}
+            <AppBar open={open} position='absolute'>
+                <Toolbar sx={{ pr: '24px' }}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={toggleDrawer}
+                        sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography
+                        component="h1"
+                        variant="h6"
+                        color="inherit"
+                        noWrap
+                        sx={{ flexGrow: 1 }}
+                    >
+                        Admin Dashboard
+                    </Typography>
+                    <AccountMenu />
+                </Toolbar>
+            </AppBar>
+
+            {/* Sidebar Drawer */}
+            <Drawer
+                variant="permanent"
+                open={open}
+                sx={open ? styles.drawerStyled : styles.hideDrawer}
+            >
+                <Toolbar sx={styles.toolBarStyled}>
+                    <IconButton onClick={toggleDrawer}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </Toolbar>
+                <Divider />
+                <List component="nav">
+                    <SideBar />
+                </List>
+            </Drawer>
+
+            {/* Main Content Area */}
+            <Box component="main" sx={styles.boxStyled}>
+                <Toolbar />
+                <Routes>
+
+                    {/* Default & Profile */}
+                    <Route path="/" element={<AdminHomePage />} />
+                    <Route path="*" element={<Navigate to="/" />} />
+                    <Route path="/Admin/dashboard" element={<AdminHomePage />} />
+                    <Route path="/Admin/profile" element={<AdminProfile />} />
+                    <Route path="/logout" element={<Logout />} />
+
+                    {/* Complaints */}
+                    <Route path="/Admin/complains" element={<SeeComplains />} />
+
+                    {/* Notices */}
+                    <Route path="/Admin/addnotice" element={<AddNotice />} />
+                    <Route path="/Admin/notices" element={<ShowNotices />} />
+
+                    {/* Subjects */}
+                    <Route path="/Admin/subjects" element={<ShowSubjects />} />
+                    <Route path="/Admin/addsubject/:id" element={<SubjectForm />} />
+                    <Route path="/Admin/subjects/chooseclass" element={<ChooseClass situation="Subject" />} />
+                    <Route path="/Admin/subjects/subject/:classID/:subjectID" element={<ViewSubject />} />
+                    <Route path="/Admin/class/subject/:classID/:subjectID" element={<ViewSubject />} />
+                    <Route path="/Admin/subject/student/attendance/:studentID/:subjectID" element={<StudentAttendance situation="Subject" />} />
+                    <Route path="/Admin/subject/student/marks/:studentID/:subjectID" element={<StudentExamMarks situation="Subject" />} />
+
+                    {/* Students */}
+                    <Route path="/Admin/addstudents" element={<AddStudent situation="Student" />} />
+                    <Route path="/Admin/students" element={<ShowStudents />} />
+                    <Route path="/Admin/students/student/:id" element={<ViewStudent />} />
+                    <Route path="/Admin/students/student/attendance/:id" element={<StudentAttendance situation="Student" />} />
+                    <Route path="/Admin/students/student/marks/:id" element={<StudentExamMarks situation="Student" />} />
+                    <Route path="/Admin/class/addstudents/:id" element={<AddStudent situation="Class" />} />
+
+                    {/* Teachers */}
+                    <Route path="/Admin/teachers" element={<ShowTeachers />} />
+                    <Route path="/Admin/teachers/teacher/:id" element={<TeacherDetails />} />
+                    <Route path="/Admin/teachers/chooseclass" element={<ChooseClass situation="Teacher" />} />
+                    <Route path="/Admin/teachers/choosesubject/:id" element={<ChooseSubject situation="Norm" />} />
+                    <Route path="/Admin/teachers/choosesubject/:classID/:teacherID" element={<ChooseSubject situation="Teacher" />} />
+                    <Route path="/Admin/teachers/addteacher/:id" element={<AddTeacher />} />
+
+                    {/* Classes */}
+                    <Route path="/Admin/addclass" element={<AddClass />} />
+                    <Route path="/Admin/classes" element={<ShowClasses />} />
+                    <Route path="/Admin/classes/class/:id" element={<ClassDetails />} />
+                </Routes>
             </Box>
-          </Box>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
         </Box>
-
-        {/* RECENT STUDENT LOGS */}
-        <Box gridColumn="span 4" gridRow="span 2" bgcolor={colors.primary[400]} p="20px" overflow="auto">
-          <Typography variant="h5" fontWeight="600" color={colors.grey[100]} mb={2}>
-            Recent Activity Logs
-          </Typography>
-          <Typography variant="body2" color={colors.grey[300]} lineHeight={2}>
-            • 👩‍🎓 John registered for "Java Basics"<br />
-            • 📘 Priya submitted "Assignment 4"<br />
-            • 🎯 Rahul scored 89 in "Math Test"<br />
-            • 🗓️ Sneha marked present on July 3<br />
-            • ✏️ Admin added subject "DSA"
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
-  );
+    );
 };
 
-export default Dashboard;
+export default AdminDashboard;
+
+const styles = {
+    boxStyled: {
+        backgroundColor: (theme) =>
+            theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[900],
+        flexGrow: 1,
+        height: '100vh',
+        overflow: 'auto',
+    },
+    toolBarStyled: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        px: [1],
+    },
+    drawerStyled: {
+        display: 'flex',
+    },
+    hideDrawer: {
+        display: 'flex',
+        '@media (max-width: 600px)': {
+            display: 'none',
+        },
+    },
+};
